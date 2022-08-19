@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1528246978062109436}
   - component: {fileID: 1528246978062109435}
+  - component: {fileID: 620057339621524822}
   m_Layer: 0
   m_Name: UI Manager
   m_TagString: Untagged
@@ -43,3 +44,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97b87e4864e405f4f95fd0352f420458, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeTime: 0.5
+  fadeIn: 0
+  fadeOut: 0
+--- !u!114 &620057339621524822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1528246978062109434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e8fa4436e7f10240937813db7095a8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  paletteScriptable: {fileID: 11400000, guid: d26aaca427b533d4db216512934f9484, type: 2}

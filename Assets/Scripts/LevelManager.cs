@@ -39,23 +39,22 @@ public class LevelManager : Singleton<LevelManager>
         
         if(CameraManager.Instance.positioning)
         {
-            FallCounter.Instance.counting = false;
-        }else
-        {
-            FallCounter.Instance.counting = true;
+            FallCounter.Instance.ResetFallCount();
         }
-        if(platforms.Length>currentPlatformIndex+1)
+        if(platforms.Length>currentPlatformIndex)
         {
-            if(platformManagers[currentPlatformIndex].platformPassed && !CameraManager.Instance.fadeInAndOut)
+            if(platformManagers[currentPlatformIndex].platformPassed && !UIManager.Instance.fadeIn && !UIManager.Instance.fadeOut)
             {
+                Debug.Log("Next level.");
                 NextLevel();
             }
             else if(FallCounter.Instance.GetFallCount()>=fallLimit)
             {
+                Debug.Log("Fall limit reached.");
                 UIManager.Instance.GetSlider().SetActive(false);
                 FallCounter.Instance.counting = false;
-                CameraManager.Instance.fadeInAndOut = true;
-                if(CameraManager.Instance.blackScreenEnabled)
+                UIManager.Instance.fadeIn = true;
+                if(UIManager.Instance.BlackScreenEnabled())
                     ResetCurrentPlatform();
             }   
         }
@@ -82,13 +81,12 @@ public class LevelManager : Singleton<LevelManager>
     }
     private void NextLevel()
     {
-        Debug.Log("Next level.");
         Destroy(currentPlatformCopy);
         currentPlatformIndex += 1;
         Invoke("DestroyOldPlatform",CameraManager.Instance.positioningTime*0.9f);
         currentPlatform = platforms[currentPlatformIndex];
         CreatePlatformCopy();
-        //GumSpawner.Instance.SetSpawners();
+        GumSpawner.Instance.SetSpawners();
         FallCounter.Instance.ResetFallCount();
     }
 
@@ -100,14 +98,16 @@ public class LevelManager : Singleton<LevelManager>
         currentPlatform = platforms[currentPlatformIndex];
         // Set PlatformManager
         platformManagers[currentPlatformIndex] = currentPlatform.GetComponent<PlatformManager>();
-        //GumSpawner.Instance.SetSpawners();
+        GumSpawner.Instance.SetSpawners();
         currentPlatform.transform.SetSiblingIndex(deletedPlatform.transform.GetSiblingIndex());
         Destroy(deletedPlatform);
         currentPlatform.SetActive(true);
         CreatePlatformCopy();
         FallCounter.Instance.ResetFallCount();
         FallCounter.Instance.counting = true;
+        UIManager.Instance.fadeOut = true;
         platformManagers[currentPlatformIndex].platformPassed = false;
+        
     }
 }
     
