@@ -5,13 +5,16 @@ using UnityEngine;
 public class PlatformManager : MonoBehaviour
 {
 
-    private int triggeredLimitBoxNumber;
+    
     private LimitBox[] limitBoxes;
-    public float timeToWaitAfterCompleted = 2.5f;
-    [SerializeField]
+    private float timeToWaitAfterCompleted = 2.5f;
+    private float passTimestamp;
+    private float timerTick = 0.0f;
+    private float timerTickInterval = 0.1f;
+    private int triggeredLimitBoxNumber;
     public bool platformPassed;
     public bool temporaryPass;
-    private float passTimestamp;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -45,12 +48,19 @@ public class PlatformManager : MonoBehaviour
                 UIManager.Instance.GetSlider().SetActive(true);
                 float sliderValue = Mathf.MoveTowards(UIManager.Instance.GetSliderValuePercentage(),1,Time.deltaTime/timeToWaitAfterCompleted);
                 UIManager.Instance.SetSliderValuePercentage(sliderValue);
-                if(passTimestamp <= Time.time)
+                if(timerTick<sliderValue)
+                {
+                    AudioManager.Instance.PlayAudioOneShot("Timer",0.5f,1.25f);
+                    timerTick+=timerTickInterval;
+                    Debug.Log("Tick " + timerTick);
+                }
+                if(passTimestamp <= Time.time && FallCounter.Instance.GetFallCount()<LevelManager.Instance.fallLimit)
                 {
                     platformPassed = true;
                 }
             }else
             {
+                timerTick=0f;
                 UIManager.Instance.SetSliderValuePercentage(0);
                 UIManager.Instance.GetSlider().SetActive(false);
             }

@@ -20,9 +20,10 @@ public class FallCounter : Singleton<FallCounter>
 
     void OnTriggerEnter(Collider col)
     {
-        if(col.transform.tag=="Gum" && counting)
+        if(col.transform.tag=="Gum" && counting && fallCount<3)
         {
             fallCount += 1;
+            UIManager.Instance.Strike();
             Debug.Log("Fall count: " + GetFallCount());
         }
     }

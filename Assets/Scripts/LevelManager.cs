@@ -7,6 +7,7 @@ public class LevelManager : Singleton<LevelManager>
 {
 
     public int fallLimit = 3;
+    private bool passedLevel = false;
     public GameObject[] platforms;
     private GameObject[] platformPrefabs;
     private GameObject currentPlatform, currentPlatformCopy;
@@ -17,6 +18,7 @@ public class LevelManager : Singleton<LevelManager>
     // Start is called before the first frame update
     void Start()
     {
+        GameObject blackScreen = GameObject.Find("BlackScreen");
         // Get platform managers.
         platformManagers = new PlatformManager[platforms.Length];
         platformPrefabs = new GameObject[platforms.Length];
@@ -41,24 +43,46 @@ public class LevelManager : Singleton<LevelManager>
         {
             FallCounter.Instance.ResetFallCount();
         }
-        if(platforms.Length>currentPlatformIndex)
+        
+        if(platformManagers[currentPlatformIndex].platformPassed && !UIManager.Instance.fadeIn && !UIManager.Instance.fadeOut)
         {
-            if(platformManagers[currentPlatformIndex].platformPassed && !UIManager.Instance.fadeIn && !UIManager.Instance.fadeOut)
+            UIManager.Instance.ResetStrikes();
+            if(platforms.Length==currentPlatformIndex+1 && !passedLevel)
             {
-                Debug.Log("Next level.");
-                NextLevel();
+                UIManager.Instance.SetPlatformIconColor(currentPlatformIndex,"DarkGum");
+                PassLevel();
+                Debug.Log("Passed level");
             }
-            else if(FallCounter.Instance.GetFallCount()>=fallLimit)
+            else if(platforms.Length>currentPlatformIndex+1)
+            {
+                NextPlatform();
+                UIManager.Instance.SetPlatformIconColor(currentPlatformIndex-1,"DarkGum");
+                UIManager.Instance.SetPlatformIconColor(currentPlatformIndex,"LightGum");
+                Debug.Log("Next platform.");
+            }
+            
+        }
+        else if(FallCounter.Instance.GetFallCount()>=fallLimit)
+        {
+            if(platforms.Length>currentPlatformIndex)
             {
                 Debug.Log("Fall limit reached.");
                 UIManager.Instance.GetSlider().SetActive(false);
                 FallCounter.Instance.counting = false;
                 UIManager.Instance.fadeIn = true;
                 if(UIManager.Instance.BlackScreenEnabled())
+                {
                     ResetCurrentPlatform();
-            }   
+                    UIManager.Instance.ResetStrikes();
+                    Debug.Log("Resetting current platform.");
+                }
+            }
         }
         
+    }
+    public int GetPlatformSize()
+    {
+        return platforms.Length;
     }
     public int GetCurrentPlatformIndex()
     {
@@ -77,13 +101,16 @@ public class LevelManager : Singleton<LevelManager>
     private void DestroyOldPlatform()
     {
         Debug.Log("Destroy old platform.");
+        FallCounter.Instance.counting = true;
         Destroy(platforms[currentPlatformIndex-1]);
+        UIManager.Instance.ResetStrikes();
     }
-    private void NextLevel()
+    private void NextPlatform()
     {
         Destroy(currentPlatformCopy);
         currentPlatformIndex += 1;
-        Invoke("DestroyOldPlatform",CameraManager.Instance.positioningTime*0.9f);
+        FallCounter.Instance.counting = false;
+        Invoke("DestroyOldPlatform",CameraManager.Instance.positioningTime*0.99f);
         currentPlatform = platforms[currentPlatformIndex];
         CreatePlatformCopy();
         GumSpawner.Instance.SetSpawners();
@@ -92,7 +119,6 @@ public class LevelManager : Singleton<LevelManager>
 
     private void ResetCurrentPlatform()
     {
-        Debug.Log("Resetting current platform.");
         GameObject deletedPlatform = currentPlatform.transform.parent.Find(currentPlatform.transform.name).gameObject;
         platforms[currentPlatformIndex] = currentPlatformCopy;
         currentPlatform = platforms[currentPlatformIndex];
@@ -107,7 +133,11 @@ public class LevelManager : Singleton<LevelManager>
         FallCounter.Instance.counting = true;
         UIManager.Instance.fadeOut = true;
         platformManagers[currentPlatformIndex].platformPassed = false;
-        
+    }
+    private void PassLevel()
+    {
+        CameraManager.Instance.SprayConfettis();
+        passedLevel = true;
     }
 }
     

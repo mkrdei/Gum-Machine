@@ -5,7 +5,7 @@ using System.Linq;
 public class AudioManager : Singleton<AudioManager>
 {
     private AudioSource[] audioSources;
-    public AudioClip[] audioClips;
+    private AudioClip[] audioClips;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,9 +26,10 @@ public class AudioManager : Singleton<AudioManager>
         }
     }
 
+// Need to rework this function similar to PlayAudioOneShot, coroutines are slow.
+/*
     public void PlayAudio(string audioName,float _volume,float _pitch)
     {
-
         foreach(AudioClip clip in audioClips)
         {
             if(clip.name==audioName)
@@ -38,11 +39,12 @@ public class AudioManager : Singleton<AudioManager>
                 source.volume = _volume;
                 source.pitch = _pitch;
                 source.Play();
+                //StartCoroutine(DestroyFinishedAudio(source, source.clip.length));
                 break;
             }
         }
-        
     }
+    */
     public void PlayAudioOneShot(string audioName,float _volume,float _pitch)
     {
         foreach(AudioClip clip in audioClips)
@@ -64,5 +66,11 @@ public class AudioManager : Singleton<AudioManager>
                 break;
             }
         }
+    }
+    IEnumerator DestroyFinishedAudio(AudioSource source,float audioDuration)
+    {
+        yield return new WaitForSeconds(audioDuration);
+        if(source!=null)
+            Destroy(source);
     }
 }

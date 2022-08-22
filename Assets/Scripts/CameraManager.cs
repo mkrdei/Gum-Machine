@@ -4,15 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 public class CameraManager : Singleton<CameraManager>
 {
+    private Transform[] confettiTransforms;
     public Vector3 offset = new Vector3(0,0,-27.25f);
     public float positioningTime = 1;
     [HideInInspector]
     public bool positioning;
     private Vector3 platformOffsetPosition;
+    private GameObject confettiPositionsParent;
     
     // Start is called before the first frame update
     void Start()
     {
+        SetConfettis();
     }
 
     void Update()
@@ -34,4 +37,19 @@ public class CameraManager : Singleton<CameraManager>
         }
     }
     
+    private void SetConfettis()
+    {
+        confettiPositionsParent = GameObject.Find("ConfettiPositions");
+        int confettiNumber = confettiPositionsParent.transform.childCount;
+        confettiTransforms = new Transform[confettiNumber];
+        for(int i = 0; i < confettiNumber; i++)
+        {
+            confettiTransforms[i] = confettiPositionsParent.transform.GetChild(i).transform;
+        }
+    }
+    public void SprayConfettis()
+    {
+        foreach(Transform confettiTransform in confettiTransforms)
+            ParticleSystemManager.Instance.PlayParticleSystem("Confetti",confettiPositionsParent.transform,confettiTransform.position);
+    }
 }

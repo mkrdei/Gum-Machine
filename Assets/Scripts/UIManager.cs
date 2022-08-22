@@ -2,24 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 public class UIManager : Singleton<UIManager>
 {
-    GameObject slider;
-    RectTransform sliderBody, sliderFilled;
+    public GameObject platformIcon;
+    private GameObject slider;
+    private RectTransform sliderBody, sliderFilled;
     private Image blackScreen;
-    float sliderValue;
-    public float fadeTime = 0.5f;
-    [HideInInspector]
-    public bool fadeIn,fadeOut;
+    private GameObject platformIcons;
+    private GameObject strikesContainer;
     private Color blackScreenColor;
+    private float sliderValue;
+    public float fadeTime = 0.5f;
+    public bool fadeIn,fadeOut;
+    
+    
 
     // Start is called before the first frame update
     void Start()
     {
+        SetPlatformIcons();
         blackScreen = GameObject.Find("BlackScreen").GetComponent<Image>();
+        strikesContainer = GameObject.Find("StrikesContainer");
         blackScreenColor = new Color(255,255,255,0);
         blackScreenColor = blackScreen.color;
-        slider = GameObject.Find("Canvas").transform.Find("Slider").gameObject;
+        slider = GameObject.Find("Slider");
         sliderBody = slider.transform.Find("Body").GetComponent<RectTransform>();
         sliderFilled = slider.transform.Find("Filled").GetComponent<RectTransform>();
         fadeOut = true;
@@ -55,7 +62,6 @@ public class UIManager : Singleton<UIManager>
     {
         if(fadeIn)
         {
-            Debug.Log("FadeIn " + blackScreenColor.a);
             blackScreenColor.a = Mathf.MoveTowards(blackScreenColor.a,1f,Time.deltaTime/fadeTime);
             blackScreen.color = blackScreenColor;
             fadeOut = false;
@@ -67,7 +73,6 @@ public class UIManager : Singleton<UIManager>
     {
         if(fadeOut)
         {
-            Debug.Log("FadeOut " + blackScreenColor.a);
             blackScreenColor.a = Mathf.MoveTowards(blackScreenColor.a,0f,Time.deltaTime/fadeTime);
             blackScreen.color = blackScreenColor;
             fadeIn = false;
@@ -78,11 +83,39 @@ public class UIManager : Singleton<UIManager>
 
     public bool BlackScreenEnabled()
     {
-        Debug.Log("Black Screen");
         bool blacked = blackScreenColor.a == 1f;
         if(blacked)
             fadeIn = false;
         return blacked;
     }
-    
+    public void Strike()
+    {
+        Image strikeImage = strikesContainer.transform.GetChild(FallCounter.Instance.GetFallCount()-1).GetComponent<Image>();
+        strikeImage.color = Palette.Instance.GetColor("FailRed");
+    }
+    public void ResetStrikes()
+    {
+        for(int i=0; i<strikesContainer.transform.childCount; i++)
+        {
+            Image strikeImage = strikesContainer.transform.GetChild(i).GetComponent<Image>();
+            strikeImage.color = Palette.Instance.GetColor("White");
+        }
+    }
+    private void SetPlatformIcons()
+    {
+        platformIcons = GameObject.Find("PlatformIcons");
+        for(int i=0; i<LevelManager.Instance.GetPlatformSize(); i++)
+        {   
+            GameObject icon = Instantiate(platformIcon,platformIcons.transform);
+            icon.GetComponentInChildren<TextMeshProUGUI>().text = (i+1).ToString();
+            if(i==0)
+                icon.GetComponent<Image>().color = Palette.Instance.GetColor("LightGum");
+        }
+    }
+
+    public void SetPlatformIconColor(int platformIndex, string colorName)
+    {
+        Image nextIconImage = platformIcons.transform.GetChild(platformIndex).GetComponent<Image>();
+        nextIconImage.color = Palette.Instance.GetColor("DarkGum");
+    }
 }

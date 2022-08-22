@@ -44,7 +44,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fallLimit: 3
-  platforms:
-  - {fileID: 0}
+  platforms: []
   platformManagers: []
   currentPlatformIndex: 0
