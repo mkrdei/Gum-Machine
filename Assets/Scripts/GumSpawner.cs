@@ -51,14 +51,14 @@ public class GumSpawner : Singleton<GumSpawner>
 
     public void SetSpawners()
     {
-        Transform spawnersParent = LevelManager.Instance.GetCurrentPlatform().transform.Find("Spawners");
+        Transform spawnersParent = PlatformManager.Instance.GetCurrentPlatform().transform.Find("Spawners");
         spawners = new Transform[spawnersParent.childCount];
         for(int i = 0; spawnersParent.childCount>i;i++)
         {
             spawners[i] = spawnersParent.GetChild(i);
         }
         gums = new GameObject("Gums");
-        gums.transform.parent = LevelManager.Instance.GetCurrentPlatform().transform;
+        gums.transform.parent = PlatformManager.Instance.GetCurrentPlatform().transform;
         downRotation = Quaternion.LookRotation(transform.position,Vector3.forward);
         timeStamp = Time.time;
         spawnOffset = transform.TransformVector(spawnOffset);

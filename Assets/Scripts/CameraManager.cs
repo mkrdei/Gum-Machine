@@ -24,7 +24,7 @@ public class CameraManager : Singleton<CameraManager>
     }
     public void SetPositionToPlatform()
     {
-        platformOffsetPosition = new Vector3(LevelManager.Instance.GetCurrentPlatform().transform.position.x+offset.x, Camera.main.transform.position.y, LevelManager.Instance.GetCurrentPlatform().transform.position.z+offset.z);
+        platformOffsetPosition = new Vector3(PlatformManager.Instance.GetCurrentPlatform().transform.position.x+offset.x, Camera.main.transform.position.y, PlatformManager.Instance.GetCurrentPlatform().transform.position.z+offset.z);
         if((Camera.main.transform.position-platformOffsetPosition).sqrMagnitude>0.1f)
         {
             float distance = Vector3.Distance(platformOffsetPosition,Camera.main.transform.position);

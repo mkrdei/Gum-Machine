@@ -104,7 +104,7 @@ public class UIManager : Singleton<UIManager>
     private void SetPlatformIcons()
     {
         platformIcons = GameObject.Find("PlatformIcons");
-        for(int i=0; i<LevelManager.Instance.GetPlatformSize(); i++)
+        for(int i=0; i<PlatformManager.Instance.GetPlatformSize(); i++)
         {   
             GameObject icon = Instantiate(platformIcon,platformIcons.transform);
             icon.GetComponentInChildren<TextMeshProUGUI>().text = (i+1).ToString();
@@ -115,7 +115,7 @@ public class UIManager : Singleton<UIManager>
 
     public void SetPlatformIconColor(int platformIndex, string colorName)
     {
-        Image nextIconImage = platformIcons.transform.GetChild(platformIndex).GetComponent<Image>();
-        nextIconImage.color = Palette.Instance.GetColor("DarkGum");
+        Image iconImage = platformIcons.transform.GetChild(platformIndex).GetComponent<Image>();
+        iconImage.color = Palette.Instance.GetColor(colorName);
     }
 }
