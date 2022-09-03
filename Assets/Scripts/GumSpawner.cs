@@ -40,7 +40,6 @@ public class GumSpawner : Singleton<GumSpawner>
 
     void LaunchInDirection(Transform spawner)
     {
-        Debug.Log("Spawning gums.");
         timeStamp = Time.time + 1/spawnRate;
         instantiatedGum = Instantiate(gum,spawner.position + spawnOffset,downRotation,gums.transform);
         Rigidbody gumRb = instantiatedGum.GetComponent<Rigidbody>();

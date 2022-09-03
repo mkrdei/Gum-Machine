@@ -24,7 +24,6 @@ public class FallCounter : Singleton<FallCounter>
         {
             fallCount += 1;
             UIManager.Instance.Strike();
-            Debug.Log("Fall count: " + GetFallCount());
         }
     }
     public int GetFallCount()
@@ -34,6 +33,5 @@ public class FallCounter : Singleton<FallCounter>
     public void ResetFallCount()
     {
         fallCount = 0;
-        Debug.Log("Fall count: " + GetFallCount());
     }
 }
