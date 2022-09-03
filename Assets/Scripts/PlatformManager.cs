@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 using System;
 public class PlatformManager : Singleton<PlatformManager>
 {
-
-    public int fallLimit = 3;
+    [SerializeField]
+    private int fallLimit = 3;
     private GameObject[] platforms;
     private GameObject[] platformPrefabs;
     private Platform[] platformScripts;
@@ -18,31 +18,17 @@ public class PlatformManager : Singleton<PlatformManager>
     // Start is called before the first frame update
     void Start()
     {
-        platforms = new GameObject[transform.childCount];
-        // Get platform managers.
-        platformScripts = new Platform[platforms.Length];
-        platformPrefabs = new GameObject[platforms.Length];
-        for(int i = 0; i < transform.childCount; i++)
-        {   
-            platforms[i] = transform.GetChild(i).gameObject;
-            platformPrefabs[i] = platforms[i];
-            platformScripts[i] = platforms[i].GetComponent<Platform>();
-        }
-        // First platform is the current platform.
-        currentPlatformIndex = 0;
-        currentPlatform = platforms[currentPlatformIndex];
-        //GumSpawner.Instance.SetSpawners();
-        CreatePlatformCopy();
+        SetPlatforms();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(CameraManager.Instance.positioning)
+        if(CameraManager.Instance.IsPositioning())
         {
             FallCounter.Instance.ResetFallCount();
         }
-        if(platformScripts[currentPlatformIndex].platformPassed && !UIManager.Instance.fadeIn && !UIManager.Instance.fadeOut)
+        if(platformScripts[currentPlatformIndex].IsPassed() && !UIManager.Instance.IsFadingIn() && !UIManager.Instance.IsFadingOut())
         {
             UIManager.Instance.ResetStrikes();
             if(platforms.Length==currentPlatformIndex+1 && !LevelManager.Instance.LevelPassed())
@@ -67,8 +53,8 @@ public class PlatformManager : Singleton<PlatformManager>
             {
                 Debug.Log("Fall limit reached.");
                 UIManager.Instance.GetSlider().SetActive(false);
-                FallCounter.Instance.counting = false;
-                UIManager.Instance.fadeIn = true;
+                FallCounter.Instance.Counting(false);
+                UIManager.Instance.FadeIn(true);
                 if(UIManager.Instance.BlackScreenEnabled())
                 {
                     ResetCurrentPlatform();
@@ -100,7 +86,7 @@ public class PlatformManager : Singleton<PlatformManager>
     private void DestroyOldPlatform()
     {
         Debug.Log("Destroy old platform.");
-        FallCounter.Instance.counting = true;
+        FallCounter.Instance.Counting(true);
         Destroy(platforms[currentPlatformIndex-1]);
         UIManager.Instance.ResetStrikes();
     }
@@ -108,8 +94,8 @@ public class PlatformManager : Singleton<PlatformManager>
     {
         Destroy(currentPlatformCopy);
         currentPlatformIndex += 1;
-        FallCounter.Instance.counting = false;
-        Invoke("DestroyOldPlatform",CameraManager.Instance.positioningTime*0.99f);
+        FallCounter.Instance.Counting(false);
+        Invoke("DestroyOldPlatform",CameraManager.Instance.GetPositioningTime()*0.99f);
         currentPlatform = platforms[currentPlatformIndex];
         CreatePlatformCopy();
         GumSpawner.Instance.SetSpawners();
@@ -129,11 +115,31 @@ public class PlatformManager : Singleton<PlatformManager>
         currentPlatform.SetActive(true);
         CreatePlatformCopy();
         FallCounter.Instance.ResetFallCount();
-        FallCounter.Instance.counting = true;
-        UIManager.Instance.fadeOut = true;
-        platformScripts[currentPlatformIndex].platformPassed = false;
+        FallCounter.Instance.Counting(true);
+        UIManager.Instance.FadeOut(true);
+        platformScripts[currentPlatformIndex].Passed(false);
     }
-
+    public int GetFallLimit()
+    {
+        return fallLimit;
+    }
+    private void SetPlatforms()
+    {
+        platforms = new GameObject[transform.childCount];
+        // Get platform managers.
+        platformScripts = new Platform[platforms.Length];
+        platformPrefabs = new GameObject[platforms.Length];
+        for(int i = 0; i < transform.childCount; i++)
+        {   
+            platforms[i] = transform.GetChild(i).gameObject;
+            platformPrefabs[i] = platforms[i];
+            platformScripts[i] = platforms[i].GetComponent<Platform>();
+        }
+        // First platform is the current platform.
+        currentPlatformIndex = 0;
+        currentPlatform = platforms[currentPlatformIndex];
+        CreatePlatformCopy();
+    }
 }
     
 

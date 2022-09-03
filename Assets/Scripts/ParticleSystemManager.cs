@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ParticleSystemManager : Singleton<ParticleSystemManager>
 {
-    public ParticleSystem[] particleSystems;
+    private ParticleSystem[] particleSystems;
     // Start is called before the first frame update
     void Start()
     {

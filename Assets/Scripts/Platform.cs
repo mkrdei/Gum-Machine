@@ -10,8 +10,8 @@ public class Platform : MonoBehaviour
     private float timerTick = 0.0f;
     private float timerTickInterval = 0.1f;
     private int triggeredLimitBoxNumber;
-    public bool platformPassed;
-    public bool temporaryPass;
+    private bool passed;
+    private bool temporarilyPassed;
 
     void Start()
     {
@@ -26,20 +26,20 @@ public class Platform : MonoBehaviour
         {
             foreach(LimitBox limitBox in limitBoxes)
             {
-                if(!limitBox.triggered)
+                if(!limitBox.IsTriggered())
                 {
-                    temporaryPass = false;
+                    temporarilyPassed = false;
                     triggeredLimitBoxNumber = 0;
                     break;
                 }
                 triggeredLimitBoxNumber++;     
                 if(triggeredLimitBoxNumber==limitBoxes.Length)
                 {
-                    temporaryPass = true;
+                    temporarilyPassed = true;
                     passTimestamp = Time.time + timeToWaitAfterCompleted;
                 }
             }
-            if(temporaryPass)
+            if(temporarilyPassed)
             {
                 UIManager.Instance.GetSlider().SetActive(true);
                 float sliderValue = Mathf.MoveTowards(UIManager.Instance.GetSliderValuePercentage(),1,Time.deltaTime/timeToWaitAfterCompleted);
@@ -49,9 +49,9 @@ public class Platform : MonoBehaviour
                     AudioManager.Instance.PlayAudioOneShot("Timer",0.5f,1.25f);
                     timerTick+=timerTickInterval;
                 }
-                if(passTimestamp <= Time.time && FallCounter.Instance.GetFallCount()<PlatformManager.Instance.fallLimit)
+                if(passTimestamp <= Time.time && FallCounter.Instance.GetFallCount()<PlatformManager.Instance.GetFallLimit())
                 {
-                    platformPassed = true;
+                    passed = true;
                 }
             }else
             {
@@ -70,6 +70,18 @@ public class Platform : MonoBehaviour
         duplicatedPlatform.name = transform.name;
         duplicatedPlatform.transform.SetSiblingIndex(transform.GetSiblingIndex());
         return duplicatedPlatform;
+    }
+    public void Passed(bool _passed)
+    {
+        passed = _passed;
+    }
+    public bool IsPassed()
+    {
+        return passed;
+    }
+    public bool IsTemporarilyPassed()
+    {
+        return temporarilyPassed;
     }
 
 }

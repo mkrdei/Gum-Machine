@@ -5,10 +5,12 @@ using UnityEngine.UI;
 public class CameraManager : Singleton<CameraManager>
 {
     private Transform[] confettiTransforms;
-    public Vector3 offset = new Vector3(0,0,-27.25f);
-    public float positioningTime = 1;
+    [SerializeField]
+    private Vector3 offset = new Vector3(0,0,-27.25f);
+    [SerializeField]
+    private float positioningTime = 1;
     [HideInInspector]
-    public bool positioning;
+    private bool positioning;
     private Vector3 platformOffsetPosition;
     private GameObject confettiPositionsParent;
     
@@ -49,7 +51,17 @@ public class CameraManager : Singleton<CameraManager>
     }
     public void SprayConfettis()
     {
+        AudioManager.Instance.PlayAudioOneShot("Confetti",0.5f,0.85f);
         foreach(Transform confettiTransform in confettiTransforms)
             ParticleSystemManager.Instance.PlayParticleSystem("Confetti",confettiPositionsParent.transform,confettiTransform.position);
+        
+    }
+    public float GetPositioningTime()
+    {
+        return positioningTime;
+    }
+    public bool IsPositioning()
+    {
+        return positioning;
     }
 }

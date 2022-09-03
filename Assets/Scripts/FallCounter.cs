@@ -5,7 +5,7 @@ using UnityEngine;
 public class FallCounter : Singleton<FallCounter>
 {
     private int fallCount;
-    public bool counting = true;
+    private bool counting = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,5 +33,9 @@ public class FallCounter : Singleton<FallCounter>
     public void ResetFallCount()
     {
         fallCount = 0;
+    }
+    public void Counting(bool _counting)
+    {
+        counting = _counting;
     }
 }

@@ -5,7 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 public class UIManager : Singleton<UIManager>
 {
-    public GameObject platformIcon;
+    [SerializeField]
+    private GameObject platformIcon;
     private GameObject slider;
     private RectTransform sliderBody, sliderFilled;
     private Image blackScreen;
@@ -13,22 +14,27 @@ public class UIManager : Singleton<UIManager>
     private GameObject strikesContainer;
     private Color blackScreenColor;
     private float sliderValue;
-    public float fadeTime = 0.5f;
-    public bool fadeIn,fadeOut;
-    
-    
+    [SerializeField]
+    private float fadeTime = 0.5f;
+    private bool fadeIn,fadeOut;
 
+    
     // Start is called before the first frame update
     void Start()
     {
         SetPlatformIcons();
+        
         blackScreen = GameObject.Find("BlackScreen").GetComponent<Image>();
-        strikesContainer = GameObject.Find("StrikesContainer");
         blackScreenColor = new Color(255,255,255,0);
         blackScreenColor = blackScreen.color;
+
         slider = GameObject.Find("Slider");
         sliderBody = slider.transform.Find("Body").GetComponent<RectTransform>();
         sliderFilled = slider.transform.Find("Filled").GetComponent<RectTransform>();
+
+        strikesContainer = GameObject.Find("StrikesContainer");
+
+        // Fadeout at the start of the level.
         fadeOut = true;
     }
 
@@ -117,5 +123,21 @@ public class UIManager : Singleton<UIManager>
     {
         Image iconImage = platformIcons.transform.GetChild(platformIndex).GetComponent<Image>();
         iconImage.color = Palette.Instance.GetColor(colorName);
+    }
+    public bool IsFadingIn()
+    {
+        return fadeIn;
+    }
+    public bool IsFadingOut()
+    {
+        return fadeOut;
+    }
+    public void FadeIn(bool _fadeIn)
+    {
+        fadeIn = _fadeIn;
+    }
+    public void FadeOut(bool _fadeOut)
+    {
+        fadeOut = _fadeOut;
     }
 }

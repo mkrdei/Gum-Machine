@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class LimitBox : MonoBehaviour
 {
-    public Material[] materials;
+    [SerializeField]
+    private Material[] materials;
     private Renderer m_renderer;
-    public bool triggered;
+    [SerializeField]
+    private bool triggered;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +37,9 @@ public class LimitBox : MonoBehaviour
         triggered = false;
         }
     }
-
+    public bool IsTriggered()
+    {
+        return triggered;
+    }
     
 }

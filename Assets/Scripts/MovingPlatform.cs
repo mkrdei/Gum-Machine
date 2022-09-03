@@ -7,28 +7,16 @@ public class MovingPlatform : MonoBehaviour
     public Transform[] positionObjects;
     private Vector3[] positions;
     private Quaternion[] rotations;
-    public float movementSpeed=1f;
-    public float rotationSpeed=5f;
+    [SerializeField]
+    private float movementSpeed=1f;
+    [SerializeField]
+    private float rotationSpeed=5f;
     private int currentPosition = 0;
     private int currentRotation = 0;
     // Start is called before the first frame update
     void Start()
     {
-        positions = new Vector3[positionObjects.Length];
-        int a = 0;
-        foreach(Transform positionObject in positionObjects)
-        {
-            positions[a] = positionObject.position;
-            a++;
-        }
-
-        rotations = new Quaternion[positionObjects.Length];
-        a = 0;
-        foreach(Transform positionObject in positionObjects)
-        {
-            rotations[a] = positionObject.rotation;
-            a++;
-        }
+        SetPositionsAndRotations();
     }
 
     // Update is called once per frame
@@ -60,12 +48,31 @@ public class MovingPlatform : MonoBehaviour
     
     
 
-    void ChangePosition(Vector3 _position, Vector3 prePosition)
+    private void ChangePosition(Vector3 _position, Vector3 prePosition)
     {
         transform.position = Vector3.MoveTowards(prePosition, _position, movementSpeed*Time.deltaTime);
     }
-    void ChangeRotation(Quaternion _rotation, Quaternion preRotation)
+    private void ChangeRotation(Quaternion _rotation, Quaternion preRotation)
     {
         transform.rotation = Quaternion.RotateTowards(preRotation, _rotation, rotationSpeed*Time.deltaTime);
+    }
+
+    private void SetPositionsAndRotations()
+    {
+        positions = new Vector3[positionObjects.Length];
+        int a = 0;
+        foreach(Transform positionObject in positionObjects)
+        {
+            positions[a] = positionObject.position;
+            a++;
+        }
+
+        rotations = new Quaternion[positionObjects.Length];
+        a = 0;
+        foreach(Transform positionObject in positionObjects)
+        {
+            rotations[a] = positionObject.rotation;
+            a++;
+        }
     }
 }

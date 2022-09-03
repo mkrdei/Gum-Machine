@@ -6,15 +6,20 @@ public class GumSpawner : Singleton<GumSpawner>
 {
     private Transform[] spawners;
     private bool active;
-    public float spawnRate = 20;
-    public Vector3 spawnOffset;
-    public Vector2 sprayRange = new Vector2(-0.1f,0.1f);
-    public float projectileSpeed=500;
-    public GameObject gum;
+    [SerializeField]
+    private float spawnRate = 20;
+    [SerializeField]
+    private Vector3 spawnOffset;
+    [SerializeField]
+    private Vector2 sprayRange = new Vector2(-0.1f,0.1f);
+    [SerializeField]
+    private float projectileSpeed=500;
+    [SerializeField]
+    private GameObject gum;
     private GameObject gums;
     private Quaternion downRotation;
-    GameObject instantiatedGum;
-    float timeStamp;
+    private GameObject instantiatedGum;
+    private float timeStamp;
     private GameObject currentPlatform;
     // Start is called before the first frame update
     void Start()
@@ -38,7 +43,7 @@ public class GumSpawner : Singleton<GumSpawner>
         }
     }
 
-    void LaunchInDirection(Transform spawner)
+    private void LaunchInDirection(Transform spawner)
     {
         timeStamp = Time.time + 1/spawnRate;
         instantiatedGum = Instantiate(gum,spawner.position + spawnOffset,downRotation,gums.transform);
