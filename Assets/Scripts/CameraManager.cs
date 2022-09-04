@@ -51,7 +51,7 @@ public class CameraManager : Singleton<CameraManager>
     }
     public void SprayConfettis()
     {
-        AudioManager.Instance.PlayAudioOneShot("Confetti",0.5f,0.85f);
+        AudioManager.Instance.PlayAudioOneShot("Confetti",0.5f,1f);
         foreach(Transform confettiTransform in confettiTransforms)
             ParticleSystemManager.Instance.PlayParticleSystem("Confetti",confettiPositionsParent.transform,confettiTransform.position);
         
