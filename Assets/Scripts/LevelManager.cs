@@ -9,13 +9,15 @@ public class LevelManager : Singleton<LevelManager>
 {
     [SerializeField]
     private string[] levels;
-    private string reachedLevel,highestLevelReached;
+    private string currentLevel,highestLevelReached;
     private bool levelPassed = false;
-    private int reachedLevelIndex;
+    private int currentLevelIndex;
     // Start is called before the first frame update
     void Start()
     {
         LoadLevelNames();
+        AssignCurrentLevelIndex();
+        SaveCurrentLevel();
     }
 
     // Update is called once per frame
@@ -27,40 +29,36 @@ public class LevelManager : Singleton<LevelManager>
     public void PassLevel()
     {
         SaveHighestLevelReached();
-        SaveReachedLevel();
         CameraManager.Instance.SprayConfettis();
         levelPassed = true;
-        Invoke("LoadReachedLevel",2f);
-
-
+        LoadNextLevel();
     }
 
     public IEnumerator LoadLevelWithDelay(string levelName, float delay)
     {
         yield return new WaitForSeconds(delay);
+        Debug.Log("Loading level " + levelName);
         SceneManager.LoadScene(levelName);
     }
     public void LoadLevel(string levelName)
     {
+        Debug.Log("Loading level " + levelName);
         SceneManager.LoadScene(levelName);
     }
 
-    public void LoadReachedLevel()
+    
+    private void LoadNextLevel()
     {
-        reachedLevelIndex = PlayerPrefs.GetInt("reachedLevelIndex");
-        
-        if(reachedLevelIndex<levels.Length)
+        if(currentLevelIndex+1<levels.Length)
         {
-            reachedLevel = levels[reachedLevelIndex];
-            LoadLevel(reachedLevel);
+            string nextLevel = levels[currentLevelIndex+1];
+            StartCoroutine(LoadLevelWithDelay(nextLevel,2f));
         }
         else
         {
-            reachedLevelIndex = 0;
-            PlayerPrefs.SetInt("reachedLevelIndex", reachedLevelIndex);
-            LoadLevel("MainMenu");
+            StartCoroutine(LoadLevelWithDelay("MainMenu",2f));
         }
-            
+        
     }
 
     public bool LevelPassed()
@@ -71,26 +69,38 @@ public class LevelManager : Singleton<LevelManager>
     private void SaveHighestLevelReached()
     {
         int highestLevelReachedIndex = PlayerPrefs.GetInt("highestLevelReachedIndex");
-        if(highestLevelReachedIndex<reachedLevelIndex)
+        if(highestLevelReachedIndex<currentLevelIndex+1)
         {
-            Debug.Log("New level record " + reachedLevelIndex + " " + highestLevelReachedIndex);
-            PlayerPrefs.SetInt("highestLevelReachedIndex",reachedLevelIndex);
+            PlayerPrefs.SetInt("highestLevelReachedIndex",currentLevelIndex+1);
         }
     }
 
-    private void SaveReachedLevel()
+    private void AssignCurrentLevelIndex()
     {
-        reachedLevelIndex = 0;
+        currentLevelIndex = 0;
         foreach(string level in levels)
         {
-            reachedLevelIndex+=1;
             if(level==SceneManager.GetActiveScene().name)
             {
                 break;
             }
+            currentLevelIndex+=1;
         }
-        PlayerPrefs.SetInt("reachedLevelIndex", reachedLevelIndex);
-        SaveHighestLevelReached();
+        if(currentLevelIndex==levels.Length)
+        {
+            currentLevelIndex = PlayerPrefs.GetInt("currentLevelIndex");
+        }
+    }
+    private void SaveCurrentLevel()
+    {
+        if(levels[currentLevelIndex].Contains("PlatformLevel"))
+            PlayerPrefs.SetInt("currentLevelIndex", currentLevelIndex);
+    }
+    public void LoadCurrentLevel()
+    {
+        currentLevelIndex = PlayerPrefs.GetInt("currentLevelIndex");
+        currentLevel = levels[currentLevelIndex];
+        LoadLevel(currentLevel);
     }
     private void LoadLevelNames()
     {
