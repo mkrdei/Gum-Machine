@@ -1,5 +1,6 @@
 # Gum Machine
 
+# Gameplay video and screenshots
 [![Gameplay Video](https://img.youtube.com/vi/IGEbLNiPtv4/0.jpg)](https://www.youtube.com/watch?v=IGEbLNiPtv4)
 
 ![image](https://user-images.githubusercontent.com/24762808/191376253-d8cfaddc-33a6-4d23-baff-afd411794faa.png)
