@@ -9,7 +9,7 @@
 ![image](https://user-images.githubusercontent.com/24762808/191376295-f6eccda9-bf29-47f5-afae-d82572b789fc.png)
 
 # About
-It's a mobile game where you need to fill the platforms with spawning gums. I hope you enjoy.
+It's a mobile game where you need to fill the platforms by spawning gums. I hope you enjoy.
 
 # How to Play
 
